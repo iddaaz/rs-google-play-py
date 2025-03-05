@@ -22,8 +22,7 @@ jobs:
           args: --release --sdist -i python3.12 --features pyo3/extension-module
           manylinux: auto
           before-script-linux: |
-            apt-get update
-            apt-get install -y libssl-dev pkg-config
+            yum install -y openssl-devel pkgconfig
 
       - name: Upload wheels to artifacts
         uses: actions/upload-artifact@v4
