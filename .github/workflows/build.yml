@@ -19,7 +19,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           working-directory: ./gpapi-python
-          args: --release --sdist -i python3.12
+          args: --release --sdist -i python3.12 --features pyo3/extension-module
           manylinux: auto
 
       - name: Upload wheels to artifacts
