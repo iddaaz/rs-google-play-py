@@ -1,0 +1,11 @@
+app:
+  dl_path: "./temp-downloads"
+  device_codename: "px_7a"
+
+auth:
+  # Your Google account email
+  email: "example@gmail.com"
+  # OAuth token (short-lived token) acquired by following https://github.com/EFForg/apkeep/blob/master/USAGE-google-play.md
+  oauth_token: "oauth2_4/123123"
+  # AAS token (long-lived token) acquired by following https://github.com/EFForg/apkeep/blob/master/USAGE-google-play.md
+  aas_token: "aas_et/123123"
