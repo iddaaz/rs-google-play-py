@@ -2,7 +2,7 @@ name: Update Python Compatibility
 
 on:
   schedule:
-    - cron: "0 0 1 * *"
+    - cron: "0 0 1 * *" # Once a month
   workflow_dispatch:
 
 jobs:

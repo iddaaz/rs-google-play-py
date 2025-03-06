@@ -1,10 +1,48 @@
 # gpapi-python
 
+[![Build Linux wheels](https://github.com/iddaaz/rs-google-play-py/actions/workflows/build.yml/badge.svg?branch=master&event=status)](https://github.com/iddaaz/rs-google-play-py/actions/workflows/build.yml)
+
+[![Checks](https://github.com/iddaaz/rs-google-play-py/actions/workflows/checks.yml/badge.svg)](https://github.com/iddaaz/rs-google-play-py/actions/workflows/checks.yml)
+
 Python bindings for Google Play API. Based on and expands upon Electronic Frontier Foundation's [rs-google-play](https://github.com/EFForg/rs-google-play).
 
 ## Installation
 
-> **Note:** Requires Python ≤ 3.12 due to PyO3/Maturin limitations
+### Option 1: Using pre-compiled wheels from our GitHub releases
+
+You'll need to set up your `setup.py` as follows:
+
+```python
+import sys
+from setuptools import setup, find_packages
+
+repo_url = "https://github.com/iddaaz/rs-google-play-py"
+
+# obtaining the python interpreter's minor version
+ver_minor = sys.version_info.minor
+
+# currently, only x86_64 is supported
+arch = "manylinux_2_17_x86_64.manylinux2014_x86_64"
+
+wheel_url = f"{repo_url}/releases/download/latest/gpapi_python-0.1.0-cp3{ver_minor}-cp3{ver_minor}-{arch}.whl"
+
+setup(
+    name="your-package",
+    version="0.1.0",
+    packages=find_packages(),
+    install_requires=[
+        f"gpapi_python @ {wheel_url}",
+    ],
+)
+```
+
+Then, you can install the package using `pip`:
+
+```shell
+pip install . # or pip install -e . for hot-reloading changes
+```
+
+### Option 2: Building from source
 
 1. Clone the repo
 
@@ -16,7 +54,7 @@ Python bindings for Google Play API. Based on and expands upon Electronic Fronti
 
    ```shell
    cd rs-google-play-py/gpapi-python
-   virtualenv -p python3.12 venv
+   virtualenv venv
    source venv/bin/activate
    pip install maturin
    ```
