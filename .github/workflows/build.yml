@@ -36,8 +36,33 @@ jobs:
           name: wheels
           path: "**/*.whl"
 
-      - name: Release
+      - name: Release with version tag
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: "**/*.whl"
+
+      - name: Create/Update latest tag
+        if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')
+        run: |
+          WHEEL_FILES=$(find . -name "*.whl")
+          if [ -z "$WHEEL_FILES" ]; then
+            echo "No wheel files found!"
+            exit 1
+          fi
+
+          git tag -d latest || true
+          git push origin :refs/tags/latest || true
+
+          git tag -a latest -m "Latest release"
+          git push origin latest
+
+      - name: Release with latest tag
+        if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: "**/*.whl"
+          tag_name: latest
+          name: "Latest Release"
+          body: "This is an automatic release containing the latest wheels. Last updated: $(date -u)"
+          prerelease: false
