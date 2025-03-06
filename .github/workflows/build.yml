@@ -67,5 +67,5 @@ jobs:
           files: "**/*.whl"
           tag_name: latest
           name: "Latest Release"
-          body: "This is an automatic release containing the latest wheels. Last updated: $(date -u)"
+          body: "This is an automatic release containing the latest wheels."
           prerelease: false
