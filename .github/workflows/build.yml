@@ -58,7 +58,7 @@ jobs:
           git push origin :refs/tags/latest || true
 
           git tag -a latest -m "Latest release"
-          git push https://${{ secrets.PAT_TOKEN }}@github.com/username/repo.git latest
+          git push origin latest
 
       - name: Release with latest tag
         if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')
