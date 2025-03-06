@@ -6,7 +6,7 @@ use pyo3::prelude::*;
 use tokio::runtime::Runtime;
 
 #[pymodule]
-fn gpapi_python(_py: Python, m: &PyModule) -> PyResult<()> {
+fn gpapi_python(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     #[pyclass]
     struct GpApiWrapper {
         api: Gpapi,
