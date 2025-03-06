@@ -21,7 +21,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           working-directory: ./gpapi-python
-          args: --release --sdist -i python3.13 -i python3.13 -i python3.13 -i python3.12 -i python3.12 -i python3.12 -i python3.12 -i python3.12 -i python3.12 -i python3.12 -i python3.12 -i python3.12 -i python3.12 -i python3.9 -i python3.9 -i python3.9 -i python3.9 -i python3.9 -i python3.9 -i python3.9 -i python3.9 -i python3.9 -i python3.9 -i python3.9 -i python3.9 -i python3.9 -i python3.9 -i python3.9 -i python3.9 -i python3.9 -i python3.9 -i python3.9 -i python3.9 -i python3.9 -i python3.9 -i python3.8 -i python3.8 -i python3.8 -i python3.8 -i python3.8 -i python3.8 -i python3.8 -i python3.8 -i python3.8 -i python3.8 -i python3.8 -i python3.8 -i python3.8 -i python3.8 -i python3.8 -i python3.8 -i python3.8 -i python3.8 -i python3.8 -i python3.7 -i python3.7 -i python3.7 -i python3.7 -i python3.7 -i python3.7 -i python3.7 -i python3.7 -i python3.7 -i python3.7 -i python3.7 -i python3.7 -i python3.7 -i python3.7 -i python3.7 -i python3.7 -i python3.7 -i python3.6 -i python3.6 -i python3.6 -i python3.6 -i python3.6 -i python3.6 -i python3.6 -i python3.6 -i python3.6 -i python3.5 -i python3.5 -i python3.5 -i python3.4 -i python3.4 -i python3.3 -i python3.3 -i python3.2 --features pyo3/extension-module
+          args: --release --sdist -i python3.12 -i python3.13 --features pyo3/extension-module
           manylinux: auto
           before-script-linux: |
             yum install -y openssl-devel pkgconfig
