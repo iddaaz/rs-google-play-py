@@ -24,8 +24,8 @@ jobs:
           data = json.loads(urllib.request.urlopen(url).read())
           # Only include stable versions 3.12 and higher
           versions = [v['version'] for v in data
-                     if v.get('stable', False) == True
-                     and float(v['version'].split('.')[0] + '.' + v['version'].split('.')[1]) >= 3.12]
+                    if v.get('stable', False) == True
+                    and float(v['version'].split('.')[0] + '.' + v['version'].split('.')[1]) >= 3.12]
           maturin_args = ' '.join(['-i python' + '.'.join(v.split('.')[:2]) for v in versions])
           print(maturin_args)
           ")
