@@ -21,7 +21,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           working-directory: ./gpapi-python
-          args: --release --sdist -i python3.12 -i python3.13 --features pyo3/extension-module
+          args: --release --sdist -i python3.12 --features pyo3/extension-module
           manylinux: auto
           before-script-linux: |
             yum install -y openssl-devel pkgconfig
@@ -51,27 +51,9 @@ jobs:
           done
           ls -la predictable_wheels/
 
-      - name: Release with latest tag
-        if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            predictable_wheels/*.whl
-            **/*.whl
-          tag_name: latest
-          name: "Latest Release"
-          body: "This is an automatic release containing the latest wheels."
-          prerelease: false
-
       - name: Create/Update latest tag
         if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')
         run: |
-          WHEEL_FILES=$(find . -name "*.whl")
-          if [ -z "$WHEEL_FILES" ]; then
-            echo "No wheel files found!"
-            exit 1
-          fi
-
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
@@ -85,8 +67,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
         with:
-          files: |
-            predictable_wheels/gpapi_python-py3_*.whl
+          files: predictable_wheels/*.whl
           tag_name: latest
           name: "Latest Release"
           body: "This is an automatic release containing the latest wheels."
