@@ -2,7 +2,7 @@ name: Update Python Compatibility
 
 on:
   schedule:
-    - cron: "0 0 1 * *"
+    - cron: "0 0 1 * *" # Once a month
   workflow_dispatch:
 
 jobs:
@@ -11,8 +11,11 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      actions: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
 
       - name: Get available stable Python versions
         id: python-versions
@@ -20,26 +23,50 @@ jobs:
           # Query available Python versions and filter for stable 3.12+ only
           VERSIONS=$(python3 -c "
           import json, urllib.request
+          from packaging import version
+
           url = 'https://raw.githubusercontent.com/actions/python-versions/main/versions-manifest.json'
           data = json.loads(urllib.request.urlopen(url).read())
-          # Only include stable versions 3.12 and higher
+
           versions = [v['version'] for v in data
                     if v.get('stable', False) == True
-                    and float(v['version'].split('.')[0] + '.' + v['version'].split('.')[1]) >= 3.12]
-          maturin_args = ' '.join(['-i python' + '.'.join(v.split('.')[:2]) for v in versions])
+                    and version.parse(v['version']) >= version.parse('3.12')]
+
+          unique_versions = sorted(set(['.'.join(v.split('.')[:2]) for v in versions]),
+                                  key=lambda x: version.parse(x))
+
+          maturin_args = ' '.join(['-i python' + v for v in unique_versions])
           print(maturin_args)
           ")
           echo "versions=$VERSIONS" >> $GITHUB_OUTPUT
+
+      - name: Install packaging package
+        run: |
+          pip install packaging
 
       - name: Update build workflow
         run: |
           # Update the build workflow with new Python versions
           VERSIONS="${{ steps.python-versions.outputs.versions }}"
-          sed -i "s/args: --release --sdist -i .* --features/args: --release --sdist $VERSIONS --features/" .github/workflows/build-wheels.yml
+
+          echo "Original build.yml content:"
+          grep -A 1 "args:" .github/workflows/build.yml
+
+          sed -i -E 's/(args: --release --sdist).*(--features)/\1 '"$VERSIONS"' \2/' .github/workflows/build.yml
+
+          if git diff --exit-code .github/workflows/build.yml; then
+            echo "No changes detected in build.yml file"
+          else
+            echo "Changes detected in build.yml file"
+          fi
+
+          echo "Updated build.yml content:"
+          cat .github/workflows/build.yml
 
       - name: Create PR if changes
         uses: peter-evans/create-pull-request@v5
         with:
+          token: ${{ secrets.PAT_TOKEN }}
           commit-message: "Update Python version support"
           title: "Update supported Python versions (3.12+)"
           body: "Automatically updated supported Python versions to include only stable 3.12+ releases."
