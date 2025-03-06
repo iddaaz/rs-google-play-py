@@ -85,7 +85,8 @@ jobs:
         if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
         with:
-          files: "**/*.whl"
+          files: |
+            predictable_wheels/gpapi_python-py3_*.whl
           tag_name: latest
           name: "Latest Release"
           body: "This is an automatic release containing the latest wheels."
