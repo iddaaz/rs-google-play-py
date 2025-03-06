@@ -61,6 +61,7 @@ fn gpapi_python(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
             Ok(details_result.map(|d| format!("{:?}", d)))
         }
 
+        #[pyo3(signature = (pkg_name, version_code=None))]
         fn get_download_info(
             &self,
             pkg_name: String,

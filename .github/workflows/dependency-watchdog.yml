@@ -25,11 +25,12 @@ jobs:
           import json, urllib.request
           url = 'https://raw.githubusercontent.com/actions/python-versions/main/versions-manifest.json'
           data = json.loads(urllib.request.urlopen(url).read())
-          # Only include stable versions 3.12 and higher
           versions = [v['version'] for v in data
                     if v.get('stable', False) == True
                     and float(v['version'].split('.')[0] + '.' + v['version'].split('.')[1]) >= 3.12]
-          maturin_args = ' '.join(['-i python' + '.'.join(v.split('.')[:2]) for v in versions])
+          unique_versions = sorted(set(['.'.join(v.split('.')[:2]) for v in versions]),
+                                  key=lambda x: [int(part) for part in x.split('.')])
+          maturin_args = ' '.join(['-i python' + v for v in unique_versions])
           print(maturin_args)
           ")
           echo "versions=$VERSIONS" >> $GITHUB_OUTPUT
@@ -38,7 +39,9 @@ jobs:
         run: |
           # Update the build workflow with new Python versions
           VERSIONS="${{ steps.python-versions.outputs.versions }}"
-          sed -i "s/args: --release --sdist -i .* --features/args: --release --sdist $VERSIONS --features/" .github/workflows/build.yml
+          sed -i -E 's/(args: --release --sdist) -i [^-]*(--features)/\1 '"$VERSIONS"' \2/' .github/workflows/build.yml
+          echo "Updated build.yml content:"
+          cat .github/workflows/build.yml
 
       - name: Create PR if changes
         uses: peter-evans/create-pull-request@v5
