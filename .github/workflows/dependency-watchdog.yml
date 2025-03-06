@@ -20,6 +20,7 @@ jobs:
       - name: Get available stable Python versions
         id: python-versions
         run: |
+          # Query available Python versions and filter for stable 3.12+ only
           VERSIONS=$(python3 -c "
           import json, urllib.request
           from packaging import version
@@ -45,8 +46,20 @@ jobs:
 
       - name: Update build workflow
         run: |
+          # Update the build workflow with new Python versions
           VERSIONS="${{ steps.python-versions.outputs.versions }}"
-          sed -i -E 's/(args: --release --sdist) -i [^-]*(--features)/\1 '"$VERSIONS"' \2/' .github/workflows/build.yml
+
+          echo "Original build.yml content:"
+          grep -A 1 "args:" .github/workflows/build.yml
+
+          sed -i -E 's/(args: --release --sdist).*(--features)/\1 '"$VERSIONS"' \2/' .github/workflows/build.yml
+
+          if git diff --exit-code .github/workflows/build.yml; then
+            echo "No changes detected in build.yml file"
+          else
+            echo "Changes detected in build.yml file"
+          fi
+
           echo "Updated build.yml content:"
           cat .github/workflows/build.yml
 
