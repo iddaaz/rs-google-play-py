@@ -35,7 +35,7 @@ jobs:
         run: |
           # Update the build workflow with new Python versions
           VERSIONS="${{ steps.python-versions.outputs.versions }}"
-          sed -i "s/args: --release --sdist -i .* --features/args: --release --sdist $VERSIONS --features/" .github/workflows/build-wheels.yml
+          sed -i "s/args: --release --sdist -i .* --features/args: --release --sdist $VERSIONS --features/" .github/workflows/build.yml
 
       - name: Create PR if changes
         uses: peter-evans/create-pull-request@v5
