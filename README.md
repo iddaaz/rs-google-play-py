@@ -1,6 +1,6 @@
 # gpapi-python
 
-[![Build Linux wheels](https://github.com/iddaaz/rs-google-play-py/actions/workflows/build.yml/badge.svg?branch=master&event=status)](https://github.com/iddaaz/rs-google-play-py/actions/workflows/build.yml)
+[![Build Linux & macOS wheels](https://github.com/iddaaz/rs-google-play-py/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/iddaaz/rs-google-play-py/actions/workflows/build.yml)
 
 [![Checks](https://github.com/iddaaz/rs-google-play-py/actions/workflows/checks.yml/badge.svg)](https://github.com/iddaaz/rs-google-play-py/actions/workflows/checks.yml)
 
@@ -10,7 +10,7 @@ Python bindings for Google Play API. Based on and expands upon Electronic Fronti
 
 ### Option 1: Using pre-compiled wheels from our GitHub releases
 
-You'll need to set up your `setup.py` as follows:
+You'll need to set up your `setup.py` to something like this:
 
 ```python
 import sys
@@ -21,7 +21,7 @@ repo_url = "https://github.com/iddaaz/rs-google-play-py"
 # obtaining the python interpreter's minor version
 ver_minor = sys.version_info.minor
 
-# currently, only x86_64 is supported
+# for available arch-specific builds check out /releases @latest tag
 arch = "manylinux_2_17_x86_64.manylinux2014_x86_64"
 
 wheel_url = f"{repo_url}/releases/download/latest/gpapi_python-0.1.0-cp3{ver_minor}-cp3{ver_minor}-{arch}.whl"
