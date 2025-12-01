@@ -1,8 +1,8 @@
 # gpapi-python
 
-[![Build Linux & macOS wheels](https://github.com/b0bleet/rs-google-play-py/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/b0bleet/rs-google-play-py/actions/workflows/build.yml)
+[![Build Linux & macOS wheels](https://github.com/iddaaz/rs-google-play-py/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/iddaaz/rs-google-play-py/actions/workflows/build.yml)
 
-[![Checks](https://github.com/b0bleet/rs-google-play-py/actions/workflows/checks.yml/badge.svg)](https://github.com/b0bleet/rs-google-play-py/actions/workflows/checks.yml)
+[![Checks](https://github.com/iddaaz/rs-google-play-py/actions/workflows/checks.yml/badge.svg)](https://github.com/iddaaz/rs-google-play-py/actions/workflows/checks.yml)
 
 Python bindings for Google Play API. Based on and expands upon Electronic Frontier Foundation's [rs-google-play](https://github.com/EFForg/rs-google-play).
 
@@ -16,7 +16,7 @@ You'll need to set up your `setup.py` to something like this:
 import sys
 from setuptools import setup, find_packages
 
-repo_url = "https://github.com/b0bleet/rs-google-play-py"
+repo_url = "https://github.com/iddaaz/rs-google-play-py"
 
 # obtaining the python interpreter's minor version
 ver_minor = sys.version_info.minor
@@ -47,7 +47,7 @@ pip install . # or pip install -e . for hot-reloading changes
 1. Clone the repo
 
    ```shell
-   git clone https://github.com/b0bleet/rs-google-play-py.git
+   git clone https://github.com/iddaaz/rs-google-play-py.git
    ```
 
 2. Set-up / Install dependencies
