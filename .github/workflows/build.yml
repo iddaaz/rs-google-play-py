@@ -1,0 +1,116 @@
+name: Build Linux and macOS wheels
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: "Platform to build (linux, macos, or both)"
+        required: true
+        default: "both"
+        type: choice
+        options:
+          - linux
+          - macos
+          - both
+
+jobs:
+  build-linux:
+    name: Build wheels on Linux
+    runs-on: ubuntu-latest
+    if: github.event.inputs.platform == 'linux' || github.event.inputs.platform == 'both' || github.event.inputs.platform == null || github.event_name == 'push'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          working-directory: ./gpapi-python
+          args: --release --sdist -i python3.12 -i python3.13 --features pyo3/extension-module
+          manylinux: auto
+          before-script-linux: |
+            yum install -y openssl-devel pkgconfig
+
+      - name: Upload Linux wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-linux
+          path: "**/*.whl"
+
+  build-macos:
+    name: Build wheels on macOS
+    runs-on: macos-latest
+    if: github.event.inputs.platform == 'macos' || github.event.inputs.platform == 'both' || github.event.inputs.platform == null || github.event_name == 'push'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          brew install openssl@3
+          echo "OPENSSL_DIR=$(brew --prefix openssl@3)" >> $GITHUB_ENV
+
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          working-directory: ./gpapi-python
+          args: --release --sdist -i python3.12 -i python3.13 --features pyo3/extension-module --target universal2-apple-darwin
+
+      - name: Upload macOS wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-macos
+          path: "**/*.whl"
+
+  release:
+    name: Release latest
+    needs: [build-linux, build-macos]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: ./dist
+
+      - name: Merge wheel artifacts
+        run: |
+          mkdir -p upload
+          find ./dist -name '*.whl' -exec cp {} upload/ \;
+
+      - name: Create/Update latest tag
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git tag -d latest || true
+          git push origin :refs/tags/latest || true
+          git tag -a latest -m "Latest release"
+          git push origin latest
+
+      - name: Release with latest tag
+        uses: softprops/action-gh-release@v1
+        with:
+          files: upload/*.whl
+          tag_name: latest
+          name: "Latest Release"
+          body: "This is an automatic release containing the latest Linux and macOS wheels."
+          prerelease: false

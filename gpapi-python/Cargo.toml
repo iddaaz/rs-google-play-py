@@ -1,0 +1,18 @@
+[package]
+name = "gpapi-python"
+version = "0.1.0"
+edition = "2021"
+authors = ["Cypho"]
+description = "Python bindings for the gpapi Rust library"
+
+[lib]
+name = "gpapi_python"
+crate-type = ["cdylib"]
+
+[package.metadata.maturin]
+name = "gpapi_python"
+
+[dependencies]
+pyo3 = { version = ">=0.23.5", features = ["extension-module"] }
+gpapi = { path = "../gpapi" }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }

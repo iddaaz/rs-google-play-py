@@ -1,0 +1,9 @@
+Cargo.lock
+.envrc
+*.swp
+
+**/target
+**/venv
+**/*.egg-info
+**/temp-downloads/
+**/config.yaml

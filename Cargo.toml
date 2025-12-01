@@ -1,0 +1,3 @@
+[workspace]
+members = ["gpapi","googleplay-protobuf","gpapi-python"]
+resolver = "2"
