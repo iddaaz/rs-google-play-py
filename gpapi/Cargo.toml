@@ -14,7 +14,7 @@ doctest = false
 
 [dependencies]
 prost = "0.14"
-reqwest = "0.12"
+reqwest = "0.13"
 bytes = "1"
 #hyper = { version = "0.14", features = ["full"] }
 #hyper-tls = "0.5"
