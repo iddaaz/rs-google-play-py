@@ -11,11 +11,8 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-      actions: write
     steps:
       - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install dependencies
         run: |
@@ -44,31 +41,19 @@ jobs:
           ")
           echo "versions=$VERSIONS" >> $GITHUB_OUTPUT
 
-      - name: Update build workflows
+      - name: Update python-versions.txt
         run: |
-          # Update the build workflow with new Python versions
           VERSIONS="${{ steps.python-versions.outputs.versions }}"
+          CURRENT=$(cat .github/python-versions.txt)
 
-          # Get the current workflow files
-          echo "Original build.yml Linux content:"
-          grep -A 1 -E "args: --release --sdist .* --features" .github/workflows/build.yml || echo "Pattern not found"
+          echo "Current versions: $CURRENT"
+          echo "New versions: $VERSIONS"
 
-          echo "Original build.yml macOS content:"
-          grep -A 1 -E "args: --release --sdist .* --target universal2-apple-darwin" .github/workflows/build.yml || echo "Pattern not found"
-
-          # Update Linux build arguments
-          sed -i -E 's/(args: --release --sdist).*(--features)/\1 '"$VERSIONS"' \2/' .github/workflows/build.yml
-
-          # Update macOS build arguments
-          sed -i -E 's/(args: --release --sdist).*(--features.*--target universal2-apple-darwin)/\1 '"$VERSIONS"' \2/' .github/workflows/build.yml
-
-          # Check for changes
-          if git diff --exit-code .github/workflows/build.yml; then
-            echo "No changes detected in build.yml file"
+          if [ "$CURRENT" = "$VERSIONS" ]; then
+            echo "No changes needed"
           else
-            echo "Changes detected in build.yml file"
-            echo "Updated build.yml content:"
-            cat .github/workflows/build.yml
+            echo "$VERSIONS" > .github/python-versions.txt
+            echo "Updated python-versions.txt"
           fi
 
       - name: Create PR if changes
@@ -80,6 +65,6 @@ jobs:
           body: |
             Automatically updated supported Python versions to include only stable 3.12+ releases.
 
-            This PR updates both Linux and macOS build configurations to ensure consistent Python version support.
+            This PR updates the Python versions configuration file used by the build workflow.
           branch: update-python-versions
           delete-branch: true

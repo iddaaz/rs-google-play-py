@@ -28,11 +28,15 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Read Python versions
+        id: python-versions
+        run: echo "args=$(cat .github/python-versions.txt)" >> $GITHUB_OUTPUT
+
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
           working-directory: ./gpapi-python
-          args: --release --sdist -i python3.12 -i python3.13 --features pyo3/extension-module
+          args: --release --sdist ${{ steps.python-versions.outputs.args }} --features pyo3/extension-module
           manylinux: auto
           before-script-linux: |
             yum install -y openssl-devel pkgconfig
@@ -64,11 +68,15 @@ jobs:
           brew install openssl@3
           echo "OPENSSL_DIR=$(brew --prefix openssl@3)" >> $GITHUB_ENV
 
+      - name: Read Python versions
+        id: python-versions
+        run: echo "args=$(cat .github/python-versions.txt)" >> $GITHUB_OUTPUT
+
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
           working-directory: ./gpapi-python
-          args: --release --sdist -i python3.12 -i python3.13 --features pyo3/extension-module --target universal2-apple-darwin
+          args: --release --sdist ${{ steps.python-versions.outputs.args }} --features pyo3/extension-module --target universal2-apple-darwin
 
       - name: Upload macOS wheels
         uses: actions/upload-artifact@v4
