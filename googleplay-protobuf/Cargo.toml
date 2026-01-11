@@ -12,4 +12,4 @@ repository = "https://github.com/EFForg/rs-google-play/tree/master/googleplay-pr
 prost = "0.13"
 
 [build-dependencies]
-prost-build = "0.13"
+prost-build = "0.14"
